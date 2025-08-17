@@ -23,6 +23,13 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->name);
 
+        //create bio
+        $user->bio()->create([
+            'bio' => 'Hello, I am a new user!',
+            'profile_picture' => '',
+            'conversation_count' => 0,
+        ]);
+
 
         return response()->json([
             'user' => $user,
@@ -63,4 +70,36 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }
+
+    //bio stuff here cuz why not
+    public function getBio(){
+        $bio = Auth::user()->bio;
+        $bio->load('user:id,name,email');
+        return response()->json($bio);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'bio' => 'nullable|string|max:500',
+            'profile_photo' => 'nullable|image|max:2048', // 2MB
+        ]);
+
+        $bio = $request->user()->bio;
+
+        if ($request->hasFile('profile_photo')) {
+            $path = $request->file('profile_photo')->store('profiles', 'public');
+            $bio->profile_picture = $path;
+        }
+
+        $bio->bio = $request->bio;
+        $bio->save();
+
+        return response()->json($bio);
+    }
+
+
+
+
+
 }
