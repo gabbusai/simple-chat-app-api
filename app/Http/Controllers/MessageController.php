@@ -17,11 +17,28 @@ class MessageController extends Controller
     {
         return Auth::user();
     }
+    //get user by id
+    public function getUserById($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found',
+            ], 404);
+        }
+        return $user;
+    }
     //search for users
     public function searchUser(Request $request){
         //paginated
         $perPage = $request->query('per_page', 10);
         $search = $request->query('search');
+
+        if(!$search) {
+            return response()->json([
+                'message' => 'Search query is required',
+            ], 400);
+        }
 
         if($search){
             $query = User::whereAny([

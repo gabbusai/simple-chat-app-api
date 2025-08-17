@@ -49,6 +49,11 @@ class User extends Authenticatable
         ];
     }
 
+    //user has bio (bio, pfp for now)
+    public function bio()
+    {
+        return $this->hasOne(Bio::class);
+    }
 
     //messages section
 
