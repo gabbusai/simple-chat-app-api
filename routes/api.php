@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     //user bio
     Route::get('/bio', [AuthController::class, 'getBio']);
-    Route::put('/bio', [AuthController::class, 'updateBio']);
+    Route::post('/bio', [BioController::class, 'updateBio']);
     Route::get('/bio/{id}', [BioController::class, 'getBioById']);
 
     //search for user(s)
